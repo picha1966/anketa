@@ -3,63 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Анкета</title>
+    <title>Німецькі Документи v5.0</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; padding: 20px; background-color: #f4f4f4; }
-        .form-group { margin-bottom: 15px; }
-        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 15px; background-color: #0088cc; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; padding: 20px; background-color: var(--tg-theme-bg-color, #ffffff); color: var(--tg-theme-text-color, #000000); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 14px; }
+        input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; box-sizing: border-box; font-size: 16px; background: var(--tg-theme-secondary-bg-color, #efeff4); color: var(--tg-theme-text-color, #000000); }
+        .hint { font-size: 12px; color: #888; margin-top: 5px; }
     </style>
 </head>
 <body>
-    <h3>Заповніть дані</h3>
-    <div class="form-group"><input type="text" id="full_name" placeholder="Vitalii Pichkur"></div>
-    <div class="form-group"><input type="text" id="address" placeholder="Marienplatz 1"></div>
-    <div class="form-group"><input type="text" id="city" placeholder="80331 Muenchen"></div>
-    <div class="form-group"><input type="text" id="date" value="04.01.2026"></div>
+    <h3>📝 Заповнення анкети</h3>
     
-    <button id="submit_btn" onclick="sendDataToBot()">СФОРМУВАТИ ДОКУМЕНТ</button>
+    <div class="form-group">
+        <label>Повне ім'я (Латиницею)</label>
+        <input type="text" id="full_name" placeholder="Vitalii Pichkur">
+        <div class="hint">Як у закордонному паспорті</div>
+    </div>
+
+    <div class="form-group">
+        <label>Адреса (Вулиця та номер)</label>
+        <input type="text" id="address" placeholder="Marienplatz 1">
+    </div>
+
+    <div class="form-group">
+        <label>Індекс та Місто</label>
+        <input type="text" id="city" placeholder="80331 Muenchen">
+    </div>
+
+    <div class="form-group">
+        <label>Дата підпису</label>
+        <input type="text" id="date" value="11.01.2026">
+    </div>
 
     <script>
-    let tg = window.Telegram.WebApp;
-    tg.expand();
+        let tg = window.Telegram.WebApp;
+        tg.expand();
 
-    // Отримуємо параметри з URL (doc_type)
-    const urlParams = new URLSearchParams(window.location.search);
-    const docType = urlParams.get('doc_type') || 'anmeldung';
+        // Налаштовуємо головну кнопку Telegram
+        tg.MainButton.text = "СКУВАТИ ДОКУМЕНТ ✅";
+        tg.MainButton.textColor = "#FFFFFF";
+        tg.MainButton.color = "#2cab37";
+        tg.MainButton.show();
 
-    function sendDataToBot() {
-        // Збираємо відповіді користувача
-        const userAnswers = {
-            full_name: document.getElementById('full_name').value.trim(),
-            address: document.getElementById('address').value.trim(),
-            city: document.getElementById('city').value.trim(),
-            signature_date: document.getElementById('date').value.trim()
-        };
+        // Отримуємо параметри з URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const docType = urlParams.get('doc_type') || 'anmeldung';
 
-        // Перевірка заповнення
-        if (!userAnswers.full_name || !userAnswers.address || !userAnswers.city) {
-            alert("Заповніть усі поля!");
-            return;
-        }
+        // Обробка натискання на головну кнопку
+        tg.onEvent('mainButtonClicked', function() {
+            const userAnswers = {
+                full_name: document.getElementById('full_name').value.trim(),
+                address: document.getElementById('address').value.trim(),
+                city: document.getElementById('city').value.trim(),
+                signature_date: document.getElementById('date').value.trim()
+            };
 
-        // Формуємо пакет даних для нового бота v5.0
-        const data = {
-            doc_type: docType,
-            status: 'success',
-            user_answers: userAnswers
-        };
+            if (!userAnswers.full_name || !userAnswers.address || !userAnswers.city) {
+                tg.showAlert("Будь ласка, заповніть усі обов'язкові поля!");
+                return;
+            }
 
-        // ВІДПРАВКА
-        tg.sendData(JSON.stringify(data));
+            const data = {
+                doc_type: docType,
+                status: 'success',
+                user_answers: userAnswers
+            };
 
-        // Закриваємо через паузу
-        setTimeout(() => {
-            tg.close();
-        }, 500);
-    }
-</script>
+            // Надсилаємо дані
+            tg.sendData(JSON.stringify(data));
+        });
+    </script>
 </body>
 </html>
+
 
