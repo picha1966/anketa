@@ -1,84 +1,74 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #fff; color: #000; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 14px; margin-bottom: 5px; color: #555; }
-        /* Робимо інпути максимально простими, щоб вони не блокувалися */
+        body { font-family: sans-serif; padding: 20px; background: white; }
+        /* Додаємо стилі, які гарантують, що поля активні */
         input { 
-            width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; 
-            font-size: 16px; box-sizing: border-box; -webkit-user-select: text;
+            width: 100%; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            border: 2px solid #ccc; 
+            border-radius: 8px;
+            font-size: 18px; /* Великий шрифт краще працює на мобільних */
+            display: block !important;
+            -webkit-user-select: text !important; /* Дозволяє виділення та ввід */
+            user-select: text !important;
         }
         button { 
-            width: 100%; padding: 16px; background: #2cab37; color: white; 
-            border: none; border-radius: 12px; font-weight: bold; font-size: 16px; margin-top: 20px;
+            width: 100%; 
+            padding: 18px; 
+            background: #28a745; 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            font-size: 18px;
         }
-        .error-hint { color: red; font-size: 12px; display: none; margin-top: 5px; }
     </style>
 </head>
 <body>
-    <h3>📝 Тестова Анкета</h3>
+    <h3>Введіть дані:</h3>
     
-    <div class="form-group">
-        <label>Ваше Ім'я (латиницею)</label>
-        <input type="text" id="first_name" placeholder="Наприклад: Vitalii">
-        <div id="err_fn" class="error-hint">⚠️ Будь ласка, введіть ім'я</div>
-    </div>
+    <input type="text" id="fn" placeholder="Ім'я" autocomplete="off">
+    
+    <input type="text" id="ln" placeholder="Прізвище" autocomplete="off">
 
-    <div class="form-group">
-        <label>Ваше Прізвище (латиницею)</label>
-        <input type="text" id="last_name" placeholder="Наприклад: Pichkur">
-        <div id="err_ln" class="error-hint">⚠️ Будь ласка, введіть прізвище</div>
-    </div>
-
-    <button id="main_btn">СКУВАТИ ДОКУМЕНТ ✅</button>
+    <button id="send">ВІДПРАВИТИ ✅</button>
 
     <script>
         let tg = window.Telegram.WebApp;
-        tg.expand(); // Розгортаємо на весь екран
+        tg.expand();
+        tg.ready();
 
-        const btn = document.getElementById('main_btn');
+        document.getElementById('send').onclick = function() {
+            let name = document.getElementById('fn').value.trim();
+            let surname = document.getElementById('ln').value.trim();
 
-        btn.addEventListener('click', function() {
-            const fn = document.getElementById('first_name').value.trim();
-            const ln = document.getElementById('last_name').value.trim();
-            const errFn = document.getElementById('err_fn');
-            const errLn = document.getElementById('err_ln');
-
-            // Скидаємо помилки
-            errFn.style.display = 'none';
-            errLn.style.display = 'none';
-
-            // ПЕРЕВІРКА: якщо порожньо, НЕ закриваємо анкету
-            if (fn === "" || ln === "") {
-                if (fn === "") errFn.style.display = 'block';
-                if (ln === "") errLn.style.display = 'block';
-                return; // ЗУПИНЯЄМО ТУТ. Анкета НЕ зникне.
+            // Якщо порожньо - просто показуємо алерт і НЕ закриваємо
+            if (name === "" || surname === "") {
+                alert("Будь ласка, впишіть дані!");
+                return;
             }
 
             // Якщо дані є - відправляємо
-            btn.innerText = "НАДСИЛАННЯ...";
-            btn.disabled = true;
-
-            const payload = {
-                doc_type: 'anmeldung',
+            let result = {
+                doc_type: "anmeldung",
                 user_answers: {
-                    first_name: fn,
-                    last_name: ln
+                    first_name: name,
+                    last_name: surname
                 }
             };
 
-            tg.sendData(JSON.stringify(payload));
+            tg.sendData(JSON.stringify(result));
             
-            // Закриваємо тільки після успішної відправки
             setTimeout(() => {
                 tg.close();
-            }, 400);
-        });
+            }, 500);
+        };
     </script>
 </body>
 </html>
