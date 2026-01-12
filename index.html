@@ -1,164 +1,40 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Anmeldung - Анкета</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        :root {
-            --bg: var(--tg-theme-bg-color, #ffffff);
-            --text: var(--tg-theme-text-color, #000000);
-            --hint: var(--tg-theme-hint-color, #888888);
-            --button: var(--tg-theme-button-color, #2cab37);
-            --button-text: var(--tg-theme-button-text-color, #ffffff);
-            --secondary-bg: var(--tg-theme-secondary-bg-color, #f5f5f5);
-        }
+<script>
+    let tg = window.Telegram.WebApp;
+    tg.expand();
+    tg.ready();
 
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
-            padding: 15px; 
-            background: var(--bg); 
-            color: var(--text); 
-            margin: 0;
-        }
-
-        .section { 
-            margin-bottom: 20px; 
-            padding: 15px; 
-            border-radius: 12px; 
-            background: var(--secondary-bg); 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        h3 { text-align: center; color: #0088cc; }
-        h4 { margin: 0 0 15px 0; color: #0088cc; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
-
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 13px; margin-bottom: 5px; color: var(--hint); font-weight: bold; }
+    function submitForm() {
+        const btn = document.getElementById('main_button');
         
-        input { 
-            width: 100%; 
-            padding: 12px; 
-            border-radius: 10px; 
-            border: 1px solid #ccc; 
-            box-sizing: border-box; 
-            font-size: 16px; 
-            background: var(--bg);
-            color: var(--text);
+        // АВТОЗАПОВНЕННЯ ДЛЯ ТЕСТУ (щоб ви не вводили 100 разів)
+        const getValue = (id, fallback) => document.getElementById(id).value || fallback;
+
+        const userAnswers = {
+            first_name: getValue('first_name', 'Vitalii'),
+            last_name: getValue('last_name', 'Pichkur'),
+            birth_date: getValue('birth_date', '01.01.1980'),
+            city: getValue('city', 'Kyiv'),
+            // ... інші поля за аналогією
+        };
+
+        const data = {
+            doc_type: new URLSearchParams(window.location.search).get('doc_type') || 'anmeldung',
+            user_answers: userAnswers,
+            status: 'success'
+        };
+
+        console.log("Sending data:", data);
+        
+        // Спроба відправки
+        try {
+            tg.sendData(JSON.stringify(data));
+            // Якщо sendData не закриває вікно, спробуємо закрити примусово
+            setTimeout(() => tg.close(), 500);
+        } catch (e) {
+            alert("Помилка відправки: " + e.message);
         }
-
-        input:focus { border-color: #0088cc; outline: none; }
-
-        #main_button { 
-            width: 100%; 
-            padding: 18px; 
-            background: #2cab37; 
-            color: white; 
-            border: none; 
-            border-radius: 15px; 
-            font-weight: bold; 
-            font-size: 17px; 
-            margin-top: 10px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        #main_button:active { transform: scale(0.98); background: #248b2d; }
-    </style>
-</head>
-<body>
-    <h3>📝 Анкета для Anmeldung</h3>
-    
-    <div class="section">
-        <h4>Персональні дані</h4>
-        <div class="form-group"><label>Ім'я (як у паспорті)</label><input type="text" id="first_name" placeholder="Vitalii"></div>
-        <div class="form-group"><label>Прізвище (як у паспорті)</label><input type="text" id="last_name" placeholder="Pichkur"></div>
-        <div class="form-group"><label>Дата народження</label><input type="text" id="birth_date" placeholder="ДД.ММ.РРРР"></div>
-        <div class="form-group"><label>Місце народження</label><input type="text" id="birth_place" placeholder="Kyiv, Ukraine"></div>
-        <div class="form-group"><label>Громадянство</label><input type="text" id="nationality" placeholder="Ukrainian"></div>
-    </div>
-
-    <div class="section">
-        <h4>Нова адреса в Німеччині</h4>
-        <div class="form-group"><label>Вулиця</label><input type="text" id="street" placeholder="Marienplatz"></div>
-        <div class="form-group"><label>Номер будинку</label><input type="text" id="house_number" placeholder="1"></div>
-        <div class="form-group"><label>Поштовий індекс (PLZ)</label><input type="text" id="postal_code" placeholder="80331"></div>
-        <div class="form-group"><label>Місто</label><input type="text" id="city" placeholder="München"></div>
-        <div class="form-group"><label>Дата заїзду</label><input type="text" id="move_in_date" placeholder="ДД.ММ.РРРР"></div>
-    </div>
-
-    <div class="section">
-        <h4>Додаткова інформація</h4>
-        <div class="form-group"><label>Релігія</label><input type="text" id="religion" placeholder="rk / ev / keine"></div>
-        <div class="form-group"><label>Сімейний стан</label><input type="text" id="marital_status" placeholder="ledig / verheiratet"></div>
-        <div class="form-group"><label>Орендодавець (Власник)</label><input type="text" id="landlord_name" placeholder="Ім'я та адреса"></div>
-    </div>
-
-    <button id="main_button" onclick="submitForm()">СКУВАТИ ДОКУМЕНТ ✅</button>
-
-    <script>
-        // Ініціалізація WebApp
-        let tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready();
-
-        function submitForm() {
-            // Візуальний відгук
-            const btn = document.getElementById('main_button');
-            btn.innerText = "НАДСИЛАЄМО...";
-            btn.style.background = "#888";
-
-            try {
-                const userAnswers = {
-                    first_name: document.getElementById('first_name').value,
-                    last_name: document.getElementById('last_name').value,
-                    birth_date: document.getElementById('birth_date').value,
-                    birth_place: document.getElementById('birth_place').value,
-                    nationality: document.getElementById('nationality').value,
-                    street: document.getElementById('street').value,
-                    house_number: document.getElementById('house_number').value,
-                    postal_code: document.getElementById('postal_code').value,
-                    city: document.getElementById('city').value,
-                    move_in_date: document.getElementById('move_in_date').value,
-                    religion: document.getElementById('religion').value,
-                    marital_status: document.getElementById('marital_status').value,
-                    landlord_name: document.getElementById('landlord_name').value,
-                    signature_date: new Date().toLocaleDateString('de-DE'),
-                    signature_place: document.getElementById('city').value || 'Deutschland'
-                };
-
-                // Валідація
-                if (!userAnswers.first_name || !userAnswers.last_name) {
-                    alert("Будь ласка, заповніть Ім'я та Прізвище");
-                    btn.innerText = "СКУВАТИ ДОКУМЕНТ ✅";
-                    btn.style.background = "#2cab37";
-                    return;
-                }
-
-                const data = {
-                    doc_type: new URLSearchParams(window.location.search).get('doc_type') || 'anmeldung',
-                    user_answers: userAnswers,
-                    status: 'success'
-                };
-
-                // Відправка даних у бот
-                tg.sendData(JSON.stringify(data));
-                
-                // Закриваємо WebApp через невелику затримку
-                setTimeout(() => {
-                    tg.close();
-                }, 100);
-
-            } catch (e) {
-                alert("Сталася помилка: " + e.message);
-                btn.innerText = "СКУВАТИ ДОКУМЕНТ ✅";
-                btn.style.background = "#2cab37";
-            }
-        }
-    </script>
-</body>
-</html>
+    }
+</script>
 
 
 
