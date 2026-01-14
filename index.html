@@ -25,7 +25,7 @@
             --button-color: var(--tg-theme-button-color, #4caf50);
             --button-text-color: var(--tg-theme-button-text-color, #ffffff);
             --secondary-bg: var(--tg-theme-secondary-bg-color, #f5f5f5);
-            
+
             /* Custom App Variables */
             --border-color: #e0e0e0;
             --border-focus: var(--link-color);
@@ -174,7 +174,8 @@
            NO aggressive event interception!
            ============================================ */
         .form-group input,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 14px 16px;
             font-size: 16px;
@@ -194,6 +195,11 @@
             appearance: none;
         }
 
+        .form-group textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
         .form-group select {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
@@ -203,22 +209,26 @@
         }
 
         .form-group input:focus,
-        .form-group select:focus {
+        .form-group select:focus,
+        .form-group textarea:focus {
             border-color: var(--border-focus);
             box-shadow: 0 0 0 3px rgba(51, 144, 236, 0.15);
         }
 
         .form-group input.valid,
-        .form-group select.valid {
+        .form-group select.valid,
+        .form-group textarea.valid {
             border-color: var(--success-color);
         }
 
         .form-group input.invalid,
-        .form-group select.invalid {
+        .form-group select.invalid,
+        .form-group textarea.invalid {
             border-color: var(--error-color);
         }
 
-        .form-group input::placeholder {
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
             color: var(--hint-color);
             opacity: 0.8;
         }
@@ -392,7 +402,8 @@
             }
 
             .form-group input,
-            .form-group select {
+            .form-group select,
+            .form-group textarea {
                 padding: 12px 14px;
                 font-size: 15px;
             }
@@ -421,7 +432,7 @@
         <div class="draft-banner" id="draftBanner">
             <div class="draft-banner-text">
                 <span class="icon">📝</span>
-                <span>Відновлено незавершену анкету</span>
+                <span id="draftBannerText">Відновлено незавершену анкету</span>
             </div>
             <button type="button" class="clear-draft-btn" id="clearDraftBtn">Очистити</button>
         </div>
@@ -434,344 +445,471 @@
 
         <!-- Form -->
         <form id="masterForm" autocomplete="off" novalidate>
-            
-            <!-- ========== COMMON SECTION (Always Visible) ========== -->
-            <div class="form-section visible" id="section_common">
-                <div class="section-header">Personal Information</div>
-                
-                <!-- First Name -->
+
+            <!-- ========== PERSONAL (Common) ========== -->
+            <div class="form-section visible" id="section_personal">
+                <div class="section-header" id="hdr_personal">Personal Information</div>
+
+                <!-- first_name -->
                 <div class="form-group">
-                    <label for="first_name">
-                        First Name (Vorname) <span class="required">*</span>
+                    <label for="first_name" id="lbl_first_name">
+                        First Name <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="first_name" 
-                        name="first_name" 
+                    <input
+                        type="text"
+                        id="first_name"
+                        name="first_name"
                         placeholder="Enter your first name"
                         autocomplete="given-name"
-                        data-section="common"
+                        data-section="personal"
                         data-required="true"
                         data-min="2"
                     >
                     <div class="error-hint" id="first_name_error">Minimum 2 characters</div>
                 </div>
 
-                <!-- Last Name -->
+                <!-- last_name -->
                 <div class="form-group">
-                    <label for="last_name">
-                        Last Name (Nachname) <span class="required">*</span>
+                    <label for="last_name" id="lbl_last_name">
+                        Last Name <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="last_name" 
-                        name="last_name" 
+                    <input
+                        type="text"
+                        id="last_name"
+                        name="last_name"
                         placeholder="Enter your last name"
                         autocomplete="family-name"
-                        data-section="common"
+                        data-section="personal"
                         data-required="true"
                         data-min="2"
                     >
                     <div class="error-hint" id="last_name_error">Minimum 2 characters</div>
                 </div>
 
-                <!-- Birth Date -->
+                <!-- birth_date -->
                 <div class="form-group">
-                    <label for="birth_date">
-                        Date of Birth (Geburtsdatum) <span class="required">*</span>
+                    <label for="birth_date" id="lbl_birth_date">
+                        Date of Birth <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="birth_date" 
+                    <input
+                        type="text"
+                        id="birth_date"
                         name="birth_date"
                         placeholder="DD.MM.YYYY"
                         inputmode="numeric"
                         maxlength="10"
-                        data-section="common"
+                        data-section="personal"
                         data-required="true"
                         data-format="date"
                     >
                     <div class="error-hint" id="birth_date_error">Format: DD.MM.YYYY</div>
                 </div>
+
+                <!-- birth_place -->
+                <div class="form-group">
+                    <label for="birth_place" id="lbl_birth_place">
+                        Place of Birth <span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="birth_place"
+                        name="birth_place"
+                        placeholder="e.g., Kyiv"
+                        data-section="personal"
+                        data-required="true"
+                        data-min="2"
+                    >
+                    <div class="error-hint" id="birth_place_error">Minimum 2 characters</div>
+                </div>
+
+                <!-- nationality -->
+                <div class="form-group">
+                    <label for="nationality" id="lbl_nationality">
+                        Nationality <span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="nationality"
+                        name="nationality"
+                        placeholder="e.g., Ukrainian"
+                        data-section="personal"
+                        data-required="true"
+                        data-min="2"
+                    >
+                    <div class="error-hint" id="nationality_error">Minimum 2 characters</div>
+                </div>
+
+                <!-- marital_status -->
+                <div class="form-group">
+                    <label for="marital_status" id="lbl_marital_status">
+                        Marital Status <span class="required">*</span>
+                    </label>
+                    <select
+                        id="marital_status"
+                        name="marital_status"
+                        data-section="personal"
+                        data-required="true"
+                    >
+                        <option value="" id="opt_ms_empty">-- Select --</option>
+                        <option value="single" id="opt_ms_single">Single</option>
+                        <option value="married" id="opt_ms_married">Married</option>
+                        <option value="divorced" id="opt_ms_divorced">Divorced</option>
+                        <option value="widowed" id="opt_ms_widowed">Widowed</option>
+                        <option value="separated" id="opt_ms_separated">Separated</option>
+                        <option value="civil_union" id="opt_ms_cu">Civil Union</option>
+                    </select>
+                    <div class="error-hint" id="marital_status_error">Please select</div>
+                </div>
+
+                <!-- religion -->
+                <div class="form-group">
+                    <label for="religion" id="lbl_religion">
+                        Religion <span class="required">*</span>
+                    </label>
+                    <select
+                        id="religion"
+                        name="religion"
+                        data-section="personal"
+                        data-required="true"
+                    >
+                        <option value="" id="opt_rel_empty">-- Select --</option>
+                        <option value="none" id="opt_rel_none">None</option>
+                        <option value="protestant" id="opt_rel_prot">Protestant</option>
+                        <option value="catholic" id="opt_rel_cath">Catholic</option>
+                        <option value="orthodox" id="opt_rel_orth">Orthodox</option>
+                        <option value="muslim" id="opt_rel_mus">Muslim</option>
+                        <option value="jewish" id="opt_rel_jew">Jewish</option>
+                        <option value="other" id="opt_rel_other">Other</option>
+                    </select>
+                    <div class="error-hint" id="religion_error">Please select</div>
+                </div>
             </div>
 
-            <!-- ========== ANMELDUNG SECTION ========== -->
-            <div class="form-section" id="section_anmeldung">
-                <div class="section-header">Address Information</div>
-                
-                <!-- Street -->
+            <!-- ========== ADDRESS (Common/Anmeldung/Payments) ========== -->
+            <div class="form-section" id="section_address">
+                <div class="section-header" id="hdr_address">Address</div>
+
+                <!-- street -->
                 <div class="form-group">
-                    <label for="street">
-                        Street (Straße) <span class="required">*</span>
+                    <label for="street" id="lbl_street">
+                        Street <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="street" 
-                        name="street" 
+                    <input
+                        type="text"
+                        id="street"
+                        name="street"
                         placeholder="e.g., Hauptstraße"
                         autocomplete="street-address"
-                        data-section="anmeldung"
+                        data-section="address"
                         data-required="true"
                         data-min="2"
                     >
                     <div class="error-hint" id="street_error">Minimum 2 characters</div>
                 </div>
 
-                <!-- House Number -->
+                <!-- house_number -->
                 <div class="form-group">
-                    <label for="house_number">
-                        House Number (Hausnummer) <span class="required">*</span>
+                    <label for="house_number" id="lbl_house_number">
+                        House Number <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="house_number" 
-                        name="house_number" 
+                    <input
+                        type="text"
+                        id="house_number"
+                        name="house_number"
                         placeholder="e.g., 15a"
-                        data-section="anmeldung"
+                        data-section="address"
                         data-required="true"
                         data-min="1"
                     >
                     <div class="error-hint" id="house_number_error">Required</div>
                 </div>
 
-                <!-- City -->
+                <!-- postal_code -->
                 <div class="form-group">
-                    <label for="city">
-                        City (Stadt) <span class="required">*</span>
-                    </label>
-                    <input 
-                        type="text" 
-                        id="city" 
-                        name="city" 
-                        placeholder="e.g., Berlin"
-                        autocomplete="address-level2"
-                        data-section="anmeldung"
-                        data-required="true"
-                        data-min="2"
-                    >
-                    <div class="error-hint" id="city_error">Minimum 2 characters</div>
-                </div>
-
-                <!-- Postal Code -->
-                <div class="form-group">
-                    <label for="postal_code">
+                    <label for="postal_code" id="lbl_postal_code">
                         Postal Code (PLZ) <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="postal_code" 
-                        name="postal_code" 
+                    <input
+                        type="text"
+                        id="postal_code"
+                        name="postal_code"
                         placeholder="12345"
                         inputmode="numeric"
                         maxlength="5"
-                        data-section="anmeldung"
+                        data-section="address"
                         data-required="true"
                         data-format="plz"
                     >
                     <div class="error-hint" id="postal_code_error">Exactly 5 digits</div>
                 </div>
 
-                <!-- Move-in Date -->
+                <!-- city -->
                 <div class="form-group">
-                    <label for="move_in_date">
-                        Move-in Date (Einzugsdatum) <span class="required">*</span>
+                    <label for="city" id="lbl_city">
+                        City <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="move_in_date" 
-                        name="move_in_date"
-                        placeholder="DD.MM.YYYY"
-                        inputmode="numeric"
-                        maxlength="10"
-                        data-section="anmeldung"
+                    <input
+                        type="text"
+                        id="city"
+                        name="city"
+                        placeholder="e.g., Berlin"
+                        autocomplete="address-level2"
+                        data-section="address"
                         data-required="true"
-                        data-format="date"
+                        data-min="2"
                     >
-                    <div class="error-hint" id="move_in_date_error">Format: DD.MM.YYYY</div>
+                    <div class="error-hint" id="city_error">Minimum 2 characters</div>
                 </div>
 
-                <!-- Previous Address -->
+                <!-- previous_address (Anmeldung only) -->
                 <div class="form-group">
-                    <label for="previous_address">
-                        Previous Address (Bisherige Anschrift)
+                    <label for="previous_address" id="lbl_previous_address">
+                        Previous Address
                     </label>
-                    <input 
-                        type="text" 
-                        id="previous_address" 
-                        name="previous_address" 
+                    <input
+                        type="text"
+                        id="previous_address"
+                        name="previous_address"
                         placeholder="e.g., Alte Straße 15, 10117 Berlin"
-                        data-section="anmeldung"
+                        data-section="address"
                         data-required="false"
                         data-min="0"
                     >
                     <div class="error-hint" id="previous_address_error"></div>
                 </div>
 
-                <!-- Landlord Name -->
+                <!-- move_in_date (Anmeldung only) -->
                 <div class="form-group">
-                    <label for="landlord_name">
-                        Landlord Name (Wohnungsgeber) <span class="required">*</span>
+                    <label for="move_in_date" id="lbl_move_in_date">
+                        Move-in Date <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="landlord_name" 
-                        name="landlord_name" 
-                        placeholder="Name of property owner"
-                        data-section="anmeldung"
+                    <input
+                        type="text"
+                        id="move_in_date"
+                        name="move_in_date"
+                        placeholder="DD.MM.YYYY"
+                        inputmode="numeric"
+                        maxlength="10"
+                        data-section="address"
+                        data-required="true"
+                        data-format="date"
+                    >
+                    <div class="error-hint" id="move_in_date_error">Format: DD.MM.YYYY</div>
+                </div>
+            </div>
+
+            <!-- ========== HOUSING (Anmeldung) ========== -->
+            <div class="form-section" id="section_housing">
+                <div class="section-header" id="hdr_housing">Housing</div>
+
+                <!-- landlord_name -->
+                <div class="form-group">
+                    <label for="landlord_name" id="lbl_landlord_name">
+                        Landlord Name <span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="landlord_name"
+                        name="landlord_name"
+                        placeholder="Name of landlord"
+                        data-section="housing"
                         data-required="true"
                         data-min="2"
                     >
                     <div class="error-hint" id="landlord_name_error">Minimum 2 characters</div>
                 </div>
-
-                <!-- Religion -->
-                <div class="form-group">
-                    <label for="religion">
-                        Religion (Konfession)
-                    </label>
-                    <select 
-                        id="religion" 
-                        name="religion"
-                        data-section="anmeldung"
-                        data-required="false"
-                    >
-                        <option value="">-- Select / Auswählen --</option>
-                        <option value="evangelisch">Evangelisch (Protestant)</option>
-                        <option value="katholisch">Römisch-katholisch (Catholic)</option>
-                        <option value="keine">Keine / Konfessionslos (None)</option>
-                        <option value="muslimisch">Muslimisch (Muslim)</option>
-                        <option value="juedisch">Jüdisch (Jewish)</option>
-                        <option value="orthodox">Orthodox</option>
-                        <option value="andere">Andere (Other)</option>
-                    </select>
-                    <div class="error-hint" id="religion_error"></div>
-                </div>
-
-                <!-- Marital Status -->
-                <div class="form-group">
-                    <label for="marital_status">
-                        Marital Status (Familienstand)
-                    </label>
-                    <select 
-                        id="marital_status" 
-                        name="marital_status"
-                        data-section="anmeldung"
-                        data-required="false"
-                    >
-                        <option value="">-- Select / Auswählen --</option>
-                        <option value="ledig">Ledig (Single)</option>
-                        <option value="verheiratet">Verheiratet (Married)</option>
-                        <option value="geschieden">Geschieden (Divorced)</option>
-                        <option value="verwitwet">Verwitwet (Widowed)</option>
-                        <option value="getrennt">Getrennt lebend (Separated)</option>
-                        <option value="eingetragene_lebenspartnerschaft">Eingetragene Lebenspartnerschaft (Civil Union)</option>
-                    </select>
-                    <div class="error-hint" id="marital_status_error"></div>
-                </div>
             </div>
 
-            <!-- ========== KINDERGELD SECTION ========== -->
-            <div class="form-section" id="section_kindergeld">
-                <div class="section-header">Child Information</div>
-                
-                <!-- Child Name -->
+            <!-- ========== BANK (Kindergeld/Wohngeld etc.) ========== -->
+            <div class="form-section" id="section_bank">
+                <div class="section-header" id="hdr_bank">Bank Details</div>
+
+                <!-- iban -->
                 <div class="form-group">
-                    <label for="child_name">
-                        Child's Full Name <span class="required">*</span>
+                    <label for="iban" id="lbl_iban">
+                        IBAN <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="child_name" 
-                        name="child_name" 
-                        placeholder="Enter child's full name"
-                        data-section="kindergeld"
+                    <input
+                        type="text"
+                        id="iban"
+                        name="iban"
+                        placeholder="DE00 0000 0000 0000 0000 00"
+                        inputmode="text"
+                        maxlength="42"
+                        data-section="bank"
+                        data-required="true"
+                        data-format="iban"
+                    >
+                    <div class="error-hint" id="iban_error">Enter a valid IBAN</div>
+                </div>
+
+                <!-- bic -->
+                <div class="form-group">
+                    <label for="bic" id="lbl_bic">
+                        BIC <span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="bic"
+                        name="bic"
+                        placeholder="e.g., COBADEFFXXX"
+                        inputmode="text"
+                        maxlength="11"
+                        data-section="bank"
+                        data-required="true"
+                        data-format="bic"
+                    >
+                    <div class="error-hint" id="bic_error">8–11 characters</div>
+                </div>
+
+                <!-- account_holder -->
+                <div class="form-group">
+                    <label for="account_holder" id="lbl_account_holder">
+                        Account Holder <span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="account_holder"
+                        name="account_holder"
+                        placeholder="e.g., Max Mustermann"
+                        data-section="bank"
                         data-required="true"
                         data-min="2"
                     >
-                    <div class="error-hint" id="child_name_error">Minimum 2 characters</div>
+                    <div class="error-hint" id="account_holder_error">Minimum 2 characters</div>
+                </div>
+            </div>
+
+            <!-- ========== CHILD (Kindergeld) ========== -->
+            <div class="form-section" id="section_child">
+                <div class="section-header" id="hdr_child">Child Information</div>
+
+                <!-- child_first_name -->
+                <div class="form-group">
+                    <label for="child_first_name" id="lbl_child_first_name">
+                        Child First Name <span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="child_first_name"
+                        name="child_first_name"
+                        placeholder="Enter child's first name"
+                        data-section="child"
+                        data-required="true"
+                        data-min="2"
+                    >
+                    <div class="error-hint" id="child_first_name_error">Minimum 2 characters</div>
                 </div>
 
-                <!-- Child Birth Date -->
+                <!-- child_last_name -->
                 <div class="form-group">
-                    <label for="child_birth_date">
-                        Child's Date of Birth <span class="required">*</span>
+                    <label for="child_last_name" id="lbl_child_last_name">
+                        Child Last Name <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="child_birth_date" 
+                    <input
+                        type="text"
+                        id="child_last_name"
+                        name="child_last_name"
+                        placeholder="Enter child's last name"
+                        data-section="child"
+                        data-required="true"
+                        data-min="2"
+                    >
+                    <div class="error-hint" id="child_last_name_error">Minimum 2 characters</div>
+                </div>
+
+                <!-- child_birth_date -->
+                <div class="form-group">
+                    <label for="child_birth_date" id="lbl_child_birth_date">
+                        Child Birth Date <span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="child_birth_date"
                         name="child_birth_date"
                         placeholder="DD.MM.YYYY"
                         inputmode="numeric"
                         maxlength="10"
-                        data-section="kindergeld"
+                        data-section="child"
                         data-required="true"
                         data-format="date"
                     >
                     <div class="error-hint" id="child_birth_date_error">Format: DD.MM.YYYY</div>
                 </div>
+
+                <!-- child_birth_place -->
+                <div class="form-group">
+                    <label for="child_birth_place" id="lbl_child_birth_place">
+                        Child Birth Place <span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="child_birth_place"
+                        name="child_birth_place"
+                        placeholder="e.g., Berlin"
+                        data-section="child"
+                        data-required="true"
+                        data-min="2"
+                    >
+                    <div class="error-hint" id="child_birth_place_error">Minimum 2 characters</div>
+                </div>
+
+                <!-- child_nationality -->
+                <div class="form-group">
+                    <label for="child_nationality" id="lbl_child_nationality">
+                        Child Nationality <span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="child_nationality"
+                        name="child_nationality"
+                        placeholder="e.g., German"
+                        data-section="child"
+                        data-required="true"
+                        data-min="2"
+                    >
+                    <div class="error-hint" id="child_nationality_error">Minimum 2 characters</div>
+                </div>
             </div>
 
-            <!-- ========== FLAT (Wohnung) SECTION ========== -->
-            <div class="form-section" id="section_flat">
-                <div class="section-header">Housing Application</div>
-                
-                <!-- Monthly Income -->
+            <!-- ========== SIGNATURE (Common) ========== -->
+            <div class="form-section" id="section_signature">
+                <div class="section-header" id="hdr_signature">Signature</div>
+
+                <!-- signature_place -->
                 <div class="form-group">
-                    <label for="monthly_income">
-                        Monthly Net Income (€) <span class="required">*</span>
+                    <label for="signature_place" id="lbl_signature_place">
+                        Signature Place (City) <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="monthly_income" 
-                        name="monthly_income" 
-                        placeholder="e.g., 2500"
+                    <input
+                        type="text"
+                        id="signature_place"
+                        name="signature_place"
+                        placeholder="e.g., Berlin"
+                        data-section="signature"
+                        data-required="true"
+                        data-min="2"
+                    >
+                    <div class="error-hint" id="signature_place_error">Minimum 2 characters</div>
+                </div>
+
+                <!-- signature_date -->
+                <div class="form-group">
+                    <label for="signature_date" id="lbl_signature_date">
+                        Signature Date <span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="signature_date"
+                        name="signature_date"
+                        placeholder="DD.MM.YYYY"
                         inputmode="numeric"
-                        data-section="flat"
+                        maxlength="10"
+                        data-section="signature"
                         data-required="true"
-                        data-format="number"
+                        data-format="date"
                     >
-                    <div class="error-hint" id="monthly_income_error">Enter a valid amount</div>
-                </div>
-
-                <!-- Number of People -->
-                <div class="form-group">
-                    <label for="num_people">
-                        Number of People <span class="required">*</span>
-                    </label>
-                    <select 
-                        id="num_people" 
-                        name="num_people"
-                        data-section="flat"
-                        data-required="true"
-                    >
-                        <option value="">Select...</option>
-                        <option value="1">1 person</option>
-                        <option value="2">2 people</option>
-                        <option value="3">3 people</option>
-                        <option value="4">4 people</option>
-                        <option value="5">5+ people</option>
-                    </select>
-                    <div class="error-hint" id="num_people_error">Please select</div>
-                </div>
-
-                <!-- Pets -->
-                <div class="form-group">
-                    <label for="pets">
-                        Pets
-                    </label>
-                    <select 
-                        id="pets" 
-                        name="pets"
-                        data-section="flat"
-                        data-required="false"
-                    >
-                        <option value="">None</option>
-                        <option value="cat">Cat</option>
-                        <option value="dog_small">Small Dog (under 10kg)</option>
-                        <option value="dog_large">Large Dog (over 10kg)</option>
-                        <option value="other">Other</option>
-                    </select>
-                    <div class="error-hint" id="pets_error"></div>
+                    <div class="error-hint" id="signature_date_error">Format: DD.MM.YYYY</div>
                 </div>
             </div>
 
@@ -780,11 +918,14 @@
         <!-- Form Footer -->
         <div class="form-footer">
             <div class="field-counter">
-                Заповнено: <span id="filledCount">0</span> / <span id="totalCount">0</span> полів
+                <span id="filledText">Заповнено:</span>
+                <span id="filledCount">0</span> /
+                <span id="totalCount">0</span>
+                <span id="fieldsText">полів</span>
             </div>
             <div class="draft-status" id="draftStatus">
                 <span class="icon">💾</span>
-                <span>Чернетка збережена</span>
+                <span id="draftSavedText">Чернетка збережена</span>
             </div>
         </div>
     </div>
@@ -801,70 +942,229 @@
             'use strict';
 
             // ============================================
-            // CONFIGURATION
+            // URL PARAMS: doc_type, lang
             // ============================================
-            var CONFIG = {
-                // Document type configurations
-                docTypes: {
-                    anmeldung: {
-                        title: 'Anmeldung',
-                        description: 'Реєстрація за місцем проживання',
-                        sections: ['common', 'anmeldung'],
-                        submitText: 'Згенерувати документ',
-                        requiredFields: 9  // Updated count
-                    },
-                    kindergeld: {
-                        title: 'Kindergeld',
-                        description: 'Заява на допомогу на дітей',
-                        sections: ['common', 'kindergeld'],
-                        submitText: 'Згенерувати документ',
-                        requiredFields: 5
-                    },
-                    flat: {
-                        title: 'Wohnungsantrag',
-                        description: 'Заява на житло',
-                        sections: ['common', 'flat'],
-                        submitText: 'Подати заяву',
-                        requiredFields: 5
-                    }
-                },
-                defaultDocType: 'anmeldung',
-                draftSaveDelay: 500
-            };
-
-            // ============================================
-            // GET DOC_TYPE FROM URL
-            // ============================================
-            function getDocTypeFromURL() {
+            function getParams() {
                 var params = new URLSearchParams(window.location.search);
-                var docType = params.get('doc_type');
-                
-                if (docType && CONFIG.docTypes[docType]) {
-                    return docType;
-                }
-                return CONFIG.defaultDocType;
+                return {
+                    docType: (params.get('doc_type') || 'anmeldung').toLowerCase(),
+                    lang: (params.get('lang') || 'ua').toLowerCase()
+                };
             }
 
-            var currentDocType = getDocTypeFromURL();
-            var DRAFT_STORAGE_KEY = 'draft_' + currentDocType;
+            var P = getParams();
+            var currentDocType = P.docType;
+            var currentLang = P.lang;
 
             // ============================================
-            // TELEGRAM WEBAPP INITIALIZATION
+            // TELEGRAM WEBAPP INIT
             // ============================================
             var tg = window.Telegram && window.Telegram.WebApp;
-            
-            // Debug logging
-            console.log('=== TELEGRAM WEBAPP DEBUG ===');
-            console.log('tg object:', tg);
-            console.log('tg.sendData available:', !!(tg && tg.sendData));
-            console.log('tg.initData:', tg ? tg.initData : 'N/A');
-            console.log('tg.initDataUnsafe:', tg ? tg.initDataUnsafe : 'N/A');
-            console.log('=============================');
-            
             if (tg) {
                 tg.ready();
                 tg.expand();
             }
+
+            // ============================================
+            // TRANSLATIONS (minimal, no CSS changes)
+            // ============================================
+            var I18N = {
+                ua: {
+                    titles: {
+                        anmeldung: "Anmeldung",
+                        kindergeld: "Kindergeld"
+                    },
+                    descriptions: {
+                        anmeldung: "Реєстрація за місцем проживання",
+                        kindergeld: "Заява на допомогу на дітей"
+                    },
+                    ui: {
+                        restored: "Відновлено незавершену анкету",
+                        clear: "Очистити",
+                        incomplete: "Заповніть обов'язкові поля",
+                        ready: "Форма готова до відправки",
+                        filled: "Заповнено:",
+                        fields: "полів",
+                        draft_saved: "Чернетка збережена",
+                        generating: "Генеруємо...",
+                        submit: "Згенерувати документ"
+                    },
+                    headers: {
+                        personal: "Особисті дані",
+                        address: "Адреса",
+                        housing: "Житло",
+                        bank: "Банківські реквізити",
+                        child: "Дані дитини",
+                        signature: "Підпис"
+                    },
+                    labels: {
+                        first_name: "Ім'я",
+                        last_name: "Прізвище",
+                        birth_date: "Дата народження",
+                        birth_place: "Місце народження",
+                        nationality: "Громадянство",
+                        marital_status: "Сімейний стан",
+                        religion: "Віросповідання",
+                        street: "Вулиця",
+                        house_number: "Номер будинку",
+                        postal_code: "Поштовий індекс",
+                        city: "Місто",
+                        previous_address: "Попередня адреса",
+                        move_in_date: "Дата заїзду",
+                        landlord_name: "Орендодавець (ПІБ)",
+                        iban: "IBAN",
+                        bic: "BIC",
+                        account_holder: "Власник рахунку",
+                        child_first_name: "Ім'я дитини",
+                        child_last_name: "Прізвище дитини",
+                        child_birth_date: "Дата народження дитини",
+                        child_birth_place: "Місце народження дитини",
+                        child_nationality: "Громадянство дитини",
+                        signature_place: "Місто підпису",
+                        signature_date: "Дата підпису"
+                    },
+                    placeholders: {
+                        birth_date: "DD.MM.YYYY",
+                        move_in_date: "DD.MM.YYYY",
+                        signature_date: "DD.MM.YYYY",
+                        child_birth_date: "DD.MM.YYYY",
+                        postal_code: "12345",
+                        iban: "DE00 0000 0000 0000 0000 00",
+                        bic: "COBADEFFXXX"
+                    },
+                    select: {
+                        empty: "-- Обрати --",
+                        ms: {
+                            single: "Неодружений/неодружена",
+                            married: "Одружений/заміжня",
+                            divorced: "Розлучений/розлучена",
+                            widowed: "Вдівець/вдова",
+                            separated: "Окремо проживає",
+                            civil_union: "Партнерство"
+                        },
+                        rel: {
+                            none: "Немає",
+                            protestant: "Протестант",
+                            catholic: "Католик",
+                            orthodox: "Православний",
+                            muslim: "Мусульманин",
+                            jewish: "Юдей",
+                            other: "Інше"
+                        }
+                    }
+                },
+                de: {
+                    titles: { anmeldung: "Anmeldung", kindergeld: "Kindergeld" },
+                    descriptions: { anmeldung: "Anmeldung (Wohnsitz registrieren)", kindergeld: "Antrag auf Kindergeld" },
+                    ui: {
+                        restored: "Entwurf wiederhergestellt",
+                        clear: "Löschen",
+                        incomplete: "Bitte Pflichtfelder ausfüllen",
+                        ready: "Bereit zum Senden",
+                        filled: "Ausgefüllt:",
+                        fields: "Felder",
+                        draft_saved: "Entwurf gespeichert",
+                        generating: "Erstelle...",
+                        submit: "Dokument erstellen"
+                    },
+                    headers: {
+                        personal: "Persönliche Daten",
+                        address: "Adresse",
+                        housing: "Wohnung",
+                        bank: "Bankdaten",
+                        child: "Kind",
+                        signature: "Unterschrift"
+                    },
+                    labels: {
+                        first_name: "Vorname",
+                        last_name: "Nachname",
+                        birth_date: "Geburtsdatum",
+                        birth_place: "Geburtsort",
+                        nationality: "Staatsangehörigkeit",
+                        marital_status: "Familienstand",
+                        religion: "Religion",
+                        street: "Straße",
+                        house_number: "Hausnummer",
+                        postal_code: "PLZ",
+                        city: "Ort",
+                        previous_address: "Bisherige Anschrift",
+                        move_in_date: "Einzugsdatum",
+                        landlord_name: "Wohnungsgeber (Name)",
+                        iban: "IBAN",
+                        bic: "BIC",
+                        account_holder: "Kontoinhaber",
+                        child_first_name: "Vorname des Kindes",
+                        child_last_name: "Nachname des Kindes",
+                        child_birth_date: "Geburtsdatum des Kindes",
+                        child_birth_place: "Geburtsort des Kindes",
+                        child_nationality: "Staatsangehörigkeit des Kindes",
+                        signature_place: "Ort (Unterschrift)",
+                        signature_date: "Datum (Unterschrift)"
+                    },
+                    placeholders: {
+                        birth_date: "TT.MM.JJJJ",
+                        move_in_date: "TT.MM.JJJJ",
+                        signature_date: "TT.MM.JJJJ",
+                        child_birth_date: "TT.MM.JJJJ",
+                        postal_code: "12345",
+                        iban: "DE00 0000 0000 0000 0000 00",
+                        bic: "COBADEFFXXX"
+                    },
+                    select: {
+                        empty: "-- Auswählen --",
+                        ms: {
+                            single: "Ledig",
+                            married: "Verheiratet",
+                            divorced: "Geschieden",
+                            widowed: "Verwitwet",
+                            separated: "Getrennt lebend",
+                            civil_union: "Eingetragene Partnerschaft"
+                        },
+                        rel: {
+                            none: "Keine",
+                            protestant: "Evangelisch",
+                            catholic: "Katholisch",
+                            orthodox: "Orthodox",
+                            muslim: "Muslimisch",
+                            jewish: "Jüdisch",
+                            other: "Andere"
+                        }
+                    }
+                }
+            };
+
+            function t(path, fallback) {
+                var pack = I18N[currentLang] || I18N.ua;
+                var parts = path.split(".");
+                var cur = pack;
+                for (var i = 0; i < parts.length; i++) {
+                    if (!cur || typeof cur !== "object") return fallback;
+                    cur = cur[parts[i]];
+                }
+                return (cur === undefined || cur === null) ? fallback : cur;
+            }
+
+            // ============================================
+            // DOC TYPE → SECTIONS
+            // ============================================
+            var DOCS = {
+                anmeldung: {
+                    sections: ["personal", "address", "housing", "signature"],
+                    showPreviousAddress: true,
+                    showMoveInDate: true,
+                    showBank: false,
+                    showChild: false
+                },
+                kindergeld: {
+                    sections: ["personal", "address", "bank", "child", "signature"],
+                    showPreviousAddress: false,
+                    showMoveInDate: false,
+                    showBank: true,
+                    showChild: true
+                }
+            };
+
+            if (!DOCS[currentDocType]) currentDocType = "anmeldung";
 
             // ============================================
             // DOM ELEMENTS
@@ -882,81 +1182,167 @@
             var formTitle = document.getElementById('formTitle');
             var formDescription = document.getElementById('formDescription');
 
+            // UI texts
+            document.getElementById("draftBannerText").textContent = t("ui.restored", "Draft restored");
+            document.getElementById("clearDraftBtn").textContent = t("ui.clear", "Clear");
+            document.getElementById("filledText").textContent = t("ui.filled", "Filled:");
+            document.getElementById("fieldsText").textContent = t("ui.fields", "fields");
+            document.getElementById("draftSavedText").textContent = t("ui.draft_saved", "Draft saved");
+
+            // headers
+            document.getElementById("hdr_personal").textContent = t("headers.personal", "Personal");
+            document.getElementById("hdr_address").textContent = t("headers.address", "Address");
+            document.getElementById("hdr_housing").textContent = t("headers.housing", "Housing");
+            document.getElementById("hdr_bank").textContent = t("headers.bank", "Bank");
+            document.getElementById("hdr_child").textContent = t("headers.child", "Child");
+            document.getElementById("hdr_signature").textContent = t("headers.signature", "Signature");
+
+            // labels
+            function setLabel(id, text) {
+                var el = document.getElementById(id);
+                if (el) el.childNodes[0].nodeValue = text + " ";
+            }
+            setLabel("lbl_first_name", t("labels.first_name", "First Name"));
+            setLabel("lbl_last_name", t("labels.last_name", "Last Name"));
+            setLabel("lbl_birth_date", t("labels.birth_date", "Birth Date"));
+            setLabel("lbl_birth_place", t("labels.birth_place", "Birth Place"));
+            setLabel("lbl_nationality", t("labels.nationality", "Nationality"));
+            setLabel("lbl_marital_status", t("labels.marital_status", "Marital Status"));
+            setLabel("lbl_religion", t("labels.religion", "Religion"));
+            setLabel("lbl_street", t("labels.street", "Street"));
+            setLabel("lbl_house_number", t("labels.house_number", "House number"));
+            setLabel("lbl_postal_code", t("labels.postal_code", "Postal code"));
+            setLabel("lbl_city", t("labels.city", "City"));
+            setLabel("lbl_previous_address", t("labels.previous_address", "Previous address"));
+            setLabel("lbl_move_in_date", t("labels.move_in_date", "Move-in date"));
+            setLabel("lbl_landlord_name", t("labels.landlord_name", "Landlord"));
+            setLabel("lbl_iban", t("labels.iban", "IBAN"));
+            setLabel("lbl_bic", t("labels.bic", "BIC"));
+            setLabel("lbl_account_holder", t("labels.account_holder", "Account holder"));
+            setLabel("lbl_child_first_name", t("labels.child_first_name", "Child first name"));
+            setLabel("lbl_child_last_name", t("labels.child_last_name", "Child last name"));
+            setLabel("lbl_child_birth_date", t("labels.child_birth_date", "Child birth date"));
+            setLabel("lbl_child_birth_place", t("labels.child_birth_place", "Child birth place"));
+            setLabel("lbl_child_nationality", t("labels.child_nationality", "Child nationality"));
+            setLabel("lbl_signature_place", t("labels.signature_place", "Signature place"));
+            setLabel("lbl_signature_date", t("labels.signature_date", "Signature date"));
+
+            // placeholders
+            document.getElementById("birth_date").placeholder = t("placeholders.birth_date", "DD.MM.YYYY");
+            document.getElementById("move_in_date").placeholder = t("placeholders.move_in_date", "DD.MM.YYYY");
+            document.getElementById("signature_date").placeholder = t("placeholders.signature_date", "DD.MM.YYYY");
+            document.getElementById("child_birth_date").placeholder = t("placeholders.child_birth_date", "DD.MM.YYYY");
+            document.getElementById("postal_code").placeholder = t("placeholders.postal_code", "12345");
+            document.getElementById("iban").placeholder = t("placeholders.iban", "DE00 0000 0000 0000 0000 00");
+            document.getElementById("bic").placeholder = t("placeholders.bic", "COBADEFFXXX");
+
+            // select options (marital, religion)
+            document.getElementById("opt_ms_empty").textContent = t("select.empty", "-- Select --");
+            document.getElementById("opt_ms_single").textContent = t("select.ms.single", "Single");
+            document.getElementById("opt_ms_married").textContent = t("select.ms.married", "Married");
+            document.getElementById("opt_ms_divorced").textContent = t("select.ms.divorced", "Divorced");
+            document.getElementById("opt_ms_widowed").textContent = t("select.ms.widowed", "Widowed");
+            document.getElementById("opt_ms_separated").textContent = t("select.ms.separated", "Separated");
+            document.getElementById("opt_ms_cu").textContent = t("select.ms.civil_union", "Civil Union");
+
+            document.getElementById("opt_rel_empty").textContent = t("select.empty", "-- Select --");
+            document.getElementById("opt_rel_none").textContent = t("select.rel.none", "None");
+            document.getElementById("opt_rel_prot").textContent = t("select.rel.protestant", "Protestant");
+            document.getElementById("opt_rel_cath").textContent = t("select.rel.catholic", "Catholic");
+            document.getElementById("opt_rel_orth").textContent = t("select.rel.orthodox", "Orthodox");
+            document.getElementById("opt_rel_mus").textContent = t("select.rel.muslim", "Muslim");
+            document.getElementById("opt_rel_jew").textContent = t("select.rel.jewish", "Jewish");
+            document.getElementById("opt_rel_other").textContent = t("select.rel.other", "Other");
+
+            // Header title/description
+            formTitle.textContent = t("titles." + currentDocType, currentDocType.toUpperCase());
+            formDescription.textContent = t("descriptions." + currentDocType, "");
+            document.title = formTitle.textContent;
+
+            // ============================================
+            // SECTION VISIBILITY
+            // ============================================
+            var sectionMap = {
+                personal: document.getElementById("section_personal"),
+                address: document.getElementById("section_address"),
+                housing: document.getElementById("section_housing"),
+                bank: document.getElementById("section_bank"),
+                child: document.getElementById("section_child"),
+                signature: document.getElementById("section_signature")
+            };
+
+            function setSectionVisible(sectionKey, visible) {
+                var el = sectionMap[sectionKey];
+                if (!el) return;
+                if (visible) el.classList.add("visible");
+                else el.classList.remove("visible");
+            }
+
+            Object.keys(sectionMap).forEach(function(k) { setSectionVisible(k, false); });
+            DOCS[currentDocType].sections.forEach(function(k) { setSectionVisible(k, true); });
+
+            // per-doc field toggles
+            if (!DOCS[currentDocType].showPreviousAddress) {
+                var pa = document.getElementById("previous_address");
+                if (pa) pa.closest(".form-group").style.display = "none";
+            }
+            if (!DOCS[currentDocType].showMoveInDate) {
+                var mid = document.getElementById("move_in_date");
+                if (mid) mid.closest(".form-group").style.display = "none";
+                // Also mark as not required if hidden
+                if (mid) mid.setAttribute("data-required", "false");
+            }
+
+            // ============================================
+            // ACTIVE FIELDS COLLECTION (VISIBLE SECTIONS ONLY)
+            // ============================================
             var isSubmitting = false;
             var saveTimeout = null;
             var activeFields = {};
             var errorHints = {};
 
-            // ============================================
-            // INITIALIZE FORM BASED ON DOC_TYPE
-            // ============================================
-            function initializeForm() {
-                var config = CONFIG.docTypes[currentDocType];
-                
-                // Set header
-                formTitle.textContent = config.title;
-                formDescription.textContent = config.description;
-                submitBtn.textContent = config.submitText;
-                document.title = config.title + ' Form';
-
-                // Show relevant sections
-                var sections = document.querySelectorAll('.form-section');
-                sections.forEach(function(section) {
-                    var sectionId = section.id.replace('section_', '');
-                    if (config.sections.indexOf(sectionId) !== -1) {
-                        section.classList.add('visible');
-                    } else {
-                        section.classList.remove('visible');
-                    }
-                });
-
-                // Collect active fields (only from visible sections)
+            function collectActiveFields() {
                 activeFields = {};
                 errorHints = {};
-                
-                var allInputs = form.querySelectorAll('input, select');
-                allInputs.forEach(function(input) {
-                    var section = input.getAttribute('data-section');
-                    if (config.sections.indexOf(section) !== -1) {
-                        activeFields[input.id] = input;
-                        var hint = document.getElementById(input.id + '_error');
-                        if (hint) {
-                            errorHints[input.id] = hint;
-                        }
-                    }
+
+                var allControls = form.querySelectorAll('input, select, textarea');
+                allControls.forEach(function(ctrl) {
+                    var sectionEl = ctrl.closest(".form-section");
+                    if (!sectionEl) return;
+                    if (!sectionEl.classList.contains("visible")) return;
+
+                    // if group hidden (previous_address/move_in_date for kindergeld)
+                    if (ctrl.closest(".form-group") && ctrl.closest(".form-group").style.display === "none") return;
+
+                    activeFields[ctrl.id] = ctrl;
+                    var hint = document.getElementById(ctrl.id + '_error');
+                    if (hint) errorHints[ctrl.id] = hint;
                 });
 
-                // Update total count
+                // total required
                 var requiredCount = 0;
                 Object.keys(activeFields).forEach(function(id) {
-                    if (activeFields[id].getAttribute('data-required') === 'true') {
-                        requiredCount++;
-                    }
+                    if (activeFields[id].getAttribute('data-required') === 'true') requiredCount++;
                 });
                 totalCountEl.textContent = requiredCount;
-
-                // Attach event listeners
-                attachEventListeners();
             }
 
+            collectActiveFields();
+
             // ============================================
-            // VALIDATION FUNCTIONS
+            // VALIDATION + MASKS
             // ============================================
-            
             function isValidDate(value) {
                 if (!value) return false;
                 var pattern = /^(\d{2})\.(\d{2})\.(\d{4})$/;
                 var match = value.match(pattern);
                 if (!match) return false;
-                
                 var day = parseInt(match[1], 10);
                 var month = parseInt(match[2], 10);
                 var year = parseInt(match[3], 10);
-                
                 if (month < 1 || month > 12) return false;
                 if (day < 1 || day > 31) return false;
-                if (year < 1900 || year > 2030) return false;
-                
+                if (year < 1900 || year > 2100) return false;
                 return true;
             }
 
@@ -964,44 +1350,58 @@
                 return /^\d{5}$/.test(value);
             }
 
-            function isValidNumber(value) {
-                return /^\d+$/.test(value) && parseInt(value, 10) > 0;
+            function normalizeIBAN(raw) {
+                return (raw || "")
+                    .toUpperCase()
+                    .replace(/[^A-Z0-9]/g, "");
+            }
+
+            function formatIBAN(raw) {
+                var v = normalizeIBAN(raw);
+                var out = "";
+                for (var i = 0; i < v.length; i++) {
+                    if (i > 0 && i % 4 === 0) out += " ";
+                    out += v[i];
+                }
+                return out.trim();
+            }
+
+            function isValidIBAN(value) {
+                // Lightweight check: length + starts with 2 letters + 2 digits
+                // (no heavy validation as requested)
+                var v = normalizeIBAN(value);
+                if (v.length < 15 || v.length > 34) return false;
+                if (!/^[A-Z]{2}\d{2}[A-Z0-9]+$/.test(v)) return false;
+                return true;
+            }
+
+            function normalizeBIC(raw) {
+                return (raw || "")
+                    .toUpperCase()
+                    .replace(/[^A-Z0-9]/g, "");
+            }
+
+            function isValidBIC(value) {
+                var v = normalizeBIC(value);
+                return /^[A-Z0-9]{8}([A-Z0-9]{3})?$/.test(v);
             }
 
             function formatDateInput(input) {
-                // Allow digits and dots, remove other characters
                 var value = input.value.replace(/[^\d.]/g, '');
-                
-                // Auto-format: add dots after DD and MM
                 var digits = value.replace(/\./g, '');
                 var formatted = '';
-                
-                if (digits.length > 0) {
-                    formatted = digits.substring(0, 2);
-                }
-                if (digits.length > 2) {
-                    formatted += '.' + digits.substring(2, 4);
-                }
-                if (digits.length > 4) {
-                    formatted += '.' + digits.substring(4, 8);
-                }
-                
-                // If user manually typed dots, preserve their input
-                if (value.includes('.') && value.length <= 10) {
-                    // Check if it looks like a valid date pattern
-                    if (/^\d{0,2}\.?\d{0,2}\.?\d{0,4}$/.test(value)) {
-                        input.value = value;
-                        return;
-                    }
-                }
-                
+
+                if (digits.length > 0) formatted = digits.substring(0, 2);
+                if (digits.length > 2) formatted += '.' + digits.substring(2, 4);
+                if (digits.length > 4) formatted += '.' + digits.substring(4, 8);
+
                 input.value = formatted;
             }
 
             function validateField(fieldId, showError) {
                 var input = activeFields[fieldId];
                 if (!input) return true;
-                
+
                 var errorHint = errorHints[fieldId];
                 var value = (input.value || '').trim();
                 var format = input.getAttribute('data-format');
@@ -1009,13 +1409,10 @@
                 var isRequired = input.getAttribute('data-required') === 'true';
                 var isValid = true;
 
-                // Clear previous state
                 input.classList.remove('valid', 'invalid');
                 if (errorHint) errorHint.classList.remove('visible');
 
-                if (!isRequired && value.length === 0) {
-                    return true;
-                }
+                if (!isRequired && value.length === 0) return true;
 
                 if (isRequired && value.length === 0) {
                     if (showError) {
@@ -1025,13 +1422,14 @@
                     return false;
                 }
 
-                // Validate based on format
                 if (format === 'date') {
                     isValid = isValidDate(value);
                 } else if (format === 'plz') {
                     isValid = isValidPLZ(value);
-                } else if (format === 'number') {
-                    isValid = isValidNumber(value);
+                } else if (format === 'iban') {
+                    isValid = isValidIBAN(value);
+                } else if (format === 'bic') {
+                    isValid = isValidBIC(value);
                 } else if (minLength > 0) {
                     isValid = value.length >= minLength;
                 } else if (input.tagName === 'SELECT' && isRequired) {
@@ -1050,70 +1448,59 @@
 
             function canSubmit() {
                 var allValid = true;
-                
                 Object.keys(activeFields).forEach(function(id) {
                     var input = activeFields[id];
                     var isRequired = input.getAttribute('data-required') === 'true';
-                    
-                    if (isRequired) {
-                        var value = (input.value || '').trim();
-                        var format = input.getAttribute('data-format');
-                        var minLength = parseInt(input.getAttribute('data-min'), 10) || 0;
+                    if (!isRequired) return;
 
-                        if (value.length === 0) {
-                            allValid = false;
-                        } else if (format === 'date' && !isValidDate(value)) {
-                            allValid = false;
-                        } else if (format === 'plz' && !isValidPLZ(value)) {
-                            allValid = false;
-                        } else if (format === 'number' && !isValidNumber(value)) {
-                            allValid = false;
-                        } else if (minLength > 0 && value.length < minLength) {
-                            allValid = false;
-                        }
-                    }
+                    var value = (input.value || '').trim();
+                    var format = input.getAttribute('data-format');
+                    var minLength = parseInt(input.getAttribute('data-min'), 10) || 0;
+
+                    if (value.length === 0) allValid = false;
+                    else if (format === 'date' && !isValidDate(value)) allValid = false;
+                    else if (format === 'plz' && !isValidPLZ(value)) allValid = false;
+                    else if (format === 'iban' && !isValidIBAN(value)) allValid = false;
+                    else if (format === 'bic' && !isValidBIC(value)) allValid = false;
+                    else if (minLength > 0 && value.length < minLength) allValid = false;
                 });
-
                 return allValid;
             }
 
-            function updateUI() {
-                var isValid = canSubmit();
-                submitBtn.disabled = !isValid || isSubmitting;
+            function updateFieldCounter() {
+                var count = 0;
+                Object.keys(activeFields).forEach(function(id) {
+                    var input = activeFields[id];
+                    if (input.getAttribute('data-required') === 'true') {
+                        if ((input.value || '').trim().length > 0) count++;
+                    }
+                });
+                filledCountEl.textContent = count;
+            }
 
-                if (isValid) {
+            function updateUI() {
+                var ok = canSubmit();
+                submitBtn.disabled = !ok || isSubmitting;
+
+                if (ok) {
                     validationStatus.classList.remove('incomplete');
                     validationStatus.classList.add('complete');
                     statusIcon.textContent = '✅';
-                    statusText.textContent = 'Форма готова до відправки';
+                    statusText.textContent = t("ui.ready", "Ready");
                 } else {
                     validationStatus.classList.remove('complete');
                     validationStatus.classList.add('incomplete');
                     statusIcon.textContent = '⚠️';
-                    statusText.textContent = "Заповніть обов'язкові поля";
+                    statusText.textContent = t("ui.incomplete", "Fill required fields");
                 }
 
                 updateFieldCounter();
             }
 
-            function updateFieldCounter() {
-                var count = 0;
-                
-                Object.keys(activeFields).forEach(function(id) {
-                    var input = activeFields[id];
-                    if (input.getAttribute('data-required') === 'true') {
-                        if (input.value.trim().length > 0) {
-                            count++;
-                        }
-                    }
-                });
-                
-                filledCountEl.textContent = count;
-            }
-
             // ============================================
-            // DRAFT STORAGE FUNCTIONS
+            // DRAFT STORAGE
             // ============================================
+            var DRAFT_STORAGE_KEY = 'draft_' + currentDocType + '_' + currentLang;
 
             function saveDraft() {
                 try {
@@ -1121,7 +1508,7 @@
                     var hasData = false;
 
                     Object.keys(activeFields).forEach(function(id) {
-                        var value = activeFields[id].value.trim();
+                        var value = (activeFields[id].value || '').trim();
                         if (value) {
                             draftData[id] = value;
                             hasData = true;
@@ -1131,22 +1518,21 @@
                     if (hasData) {
                         draftData._timestamp = Date.now();
                         draftData._docType = currentDocType;
+                        draftData._lang = currentLang;
                         localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draftData));
-                        showDraftSavedIndicator();
+                        draftStatus.classList.add('visible');
                     } else {
                         localStorage.removeItem(DRAFT_STORAGE_KEY);
-                        hideDraftSavedIndicator();
+                        draftStatus.classList.remove('visible');
                     }
                 } catch (e) {
-                    console.warn('Could not save draft:', e);
+                    // silent
                 }
             }
 
             function debouncedSaveDraft() {
-                if (saveTimeout) {
-                    clearTimeout(saveTimeout);
-                }
-                saveTimeout = setTimeout(saveDraft, CONFIG.draftSaveDelay);
+                if (saveTimeout) clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(saveDraft, 500);
             }
 
             function loadDraft() {
@@ -1155,54 +1541,41 @@
                     if (!savedData) return false;
 
                     var draftData = JSON.parse(savedData);
-                    var hasRestored = false;
+                    var restored = false;
 
                     Object.keys(activeFields).forEach(function(id) {
                         if (draftData[id]) {
                             activeFields[id].value = draftData[id];
-                            hasRestored = true;
+                            restored = true;
                         }
                     });
 
-                    return hasRestored;
+                    return restored;
                 } catch (e) {
-                    console.warn('Could not load draft:', e);
                     return false;
                 }
             }
 
             function clearDraft() {
-                try {
-                    localStorage.removeItem(DRAFT_STORAGE_KEY);
-                } catch (e) {
-                    console.warn('Could not clear draft:', e);
-                }
-
+                try { localStorage.removeItem(DRAFT_STORAGE_KEY); } catch (e) {}
                 Object.keys(activeFields).forEach(function(id) {
                     activeFields[id].value = '';
                     activeFields[id].classList.remove('valid', 'invalid');
-                    if (errorHints[id]) {
-                        errorHints[id].classList.remove('visible');
-                    }
+                    if (errorHints[id]) errorHints[id].classList.remove('visible');
                 });
-
                 draftBanner.classList.remove('visible', 'fade-in');
-                hideDraftSavedIndicator();
+                draftStatus.classList.remove('visible');
                 updateUI();
             }
 
-            function showDraftSavedIndicator() {
-                draftStatus.classList.add('visible');
-            }
-
-            function hideDraftSavedIndicator() {
-                draftStatus.classList.remove('visible');
-            }
+            clearDraftBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                clearDraft();
+            });
 
             // ============================================
-            // EVENT HANDLERS
+            // EVENT LISTENERS
             // ============================================
-            
             function attachEventListeners() {
                 Object.keys(activeFields).forEach(function(id) {
                     var input = activeFields[id];
@@ -1211,11 +1584,20 @@
                     input.addEventListener('input', function() {
                         if (format === 'date') {
                             formatDateInput(input);
+                        } else if (format === 'plz') {
+                            input.value = input.value.replace(/\D/g, '').slice(0, 5);
+                        } else if (format === 'iban') {
+                            var caret = input.selectionStart || 0;
+                            var before = input.value;
+                            input.value = formatIBAN(input.value).slice(0, 42);
+                            // keep caret roughly stable
+                            if (before !== input.value) {
+                                input.setSelectionRange(Math.min(caret + 1, input.value.length), Math.min(caret + 1, input.value.length));
+                            }
+                        } else if (format === 'bic') {
+                            input.value = normalizeBIC(input.value).slice(0, 11);
                         }
-                        if (format === 'plz' || format === 'number') {
-                            input.value = input.value.replace(/\D/g, '');
-                        }
-                        
+
                         validateField(id, false);
                         updateUI();
                         debouncedSaveDraft();
@@ -1228,7 +1610,6 @@
                         }
                     });
 
-                    // For select elements
                     if (input.tagName === 'SELECT') {
                         input.addEventListener('change', function() {
                             validateField(id, false);
@@ -1239,154 +1620,128 @@
                 });
             }
 
-            // Clear Draft Button
-            clearDraftBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                clearDraft();
-            });
+            attachEventListeners();
 
             // ============================================
-            // SUBMIT HANDLER
+            // SUBMIT → tg.sendData(JSON.stringify(payload))
+            // FORMAT STRICT:
+            // { doc_type: currentDocType, user_answers: userAnswers }
             // ============================================
-            
             submitBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-
                 if (isSubmitting) return;
 
                 // Final validation
                 var allValid = true;
                 Object.keys(activeFields).forEach(function(id) {
-                    if (!validateField(id, true)) {
-                        allValid = false;
-                    }
+                    if (!validateField(id, true)) allValid = false;
                 });
 
                 if (!allValid) {
                     submitBtn.classList.add('shake');
-                    setTimeout(function() {
-                        submitBtn.classList.remove('shake');
-                    }, 400);
+                    setTimeout(function() { submitBtn.classList.remove('shake'); }, 400);
                     return;
                 }
 
-                // Set loading state
                 isSubmitting = true;
-                submitBtn.textContent = 'Генеруємо...';
+                submitBtn.textContent = t("ui.generating", "Generating...");
                 submitBtn.classList.add('loading');
                 submitBtn.disabled = true;
 
-                // Collect form data
+                // Collect answers by NAME (contract keys)
                 var userAnswers = {};
                 Object.keys(activeFields).forEach(function(id) {
-                    var value = activeFields[id].value.trim();
-                    if (value) {
-                        userAnswers[id] = value;
-                    }
+                    var el = activeFields[id];
+                    var v = (el.value || '').trim();
+                    if (!v) return;
+
+                    // send normalized iban/bic (optional, safe)
+                    if (el.name === "iban") v = normalizeIBAN(v);
+                    if (el.name === "bic") v = normalizeBIC(v);
+
+                    userAnswers[el.name] = v;
                 });
 
-                // Build payload - MUST include status: "success" for bot!
                 var payload = {
                     doc_type: currentDocType,
-                    user_answers: userAnswers,
-                    status: 'success'  // CRITICAL: Bot expects this!
+                    user_answers: userAnswers
                 };
 
-                console.log('=== SENDING TO TELEGRAM ===');
-                console.log('Payload:', JSON.stringify(payload, null, 2));
-                console.log('tg available:', !!tg);
-                console.log('tg.sendData available:', !!(tg && tg.sendData));
-                console.log('===========================');
+                // Clear draft on submit
+                try { localStorage.removeItem(DRAFT_STORAGE_KEY); } catch (e) {}
 
-                // Clear draft
-                try {
-                    localStorage.removeItem(DRAFT_STORAGE_KEY);
-                } catch (e) {
-                    console.warn('Could not clear draft:', e);
-                }
-
-                // Send data to Telegram
                 if (tg && tg.sendData) {
                     try {
-                        var jsonString = JSON.stringify(payload);
-                        console.log('Calling tg.sendData with:', jsonString);
-                        tg.sendData(jsonString);
-                        console.log('tg.sendData called successfully');
-                        
-                        // Wait before closing to ensure data is sent
+                        tg.sendData(JSON.stringify(payload));
                         setTimeout(function() {
-                            console.log('Calling tg.close()');
-                            if (tg.close) {
-                                tg.close();
-                            }
-                        }, 500);
+                            if (tg.close) tg.close();
+                        }, 350);
                     } catch (err) {
-                        console.error('Error in tg.sendData:', err);
+                        // fallback: unlock button
+                        isSubmitting = false;
+                        submitBtn.textContent = t("ui.submit", "Submit");
+                        submitBtn.classList.remove('loading');
+                        updateUI();
                     }
                 } else {
-                    console.warn('WebApp not available or not opened via Telegram button!');
-                    console.warn('tg:', tg);
-                    console.warn('To test: Open this WebApp via InlineKeyboardButton with web_app=WebAppInfo(url=...)');
-                    
+                    // Not in Telegram: show success UI, keep open
                     statusIcon.textContent = '✅';
-                    statusText.textContent = 'Дані збережено (тестовий режим)';
+                    statusText.textContent = t("ui.ready", "Ready");
                     validationStatus.classList.remove('incomplete');
                     validationStatus.classList.add('complete');
-                    
-                    draftBanner.classList.remove('visible', 'fade-in');
-                    hideDraftSavedIndicator();
 
                     setTimeout(function() {
                         isSubmitting = false;
-                        submitBtn.textContent = CONFIG.docTypes[currentDocType].submitText;
+                        submitBtn.textContent = t("ui.submit", "Submit");
                         submitBtn.classList.remove('loading');
-                        submitBtn.disabled = false;
-                    }, 2000);
+                        updateUI();
+                    }, 800);
                 }
             });
 
             // ============================================
-            // TELEGRAM BACK BUTTON
-            // Back button просто закриває WebApp без відправки cancelled
-            // Дані залишаються в чернетці для продовження пізніше
+            // BACK BUTTON (no cancelled send)
             // ============================================
-            
             if (tg && tg.BackButton) {
                 tg.BackButton.show();
                 tg.BackButton.onClick(function() {
-                    // Просто закриваємо WebApp без відправки статусу
-                    // Чернетка вже збережена в localStorage
-                    console.log('Back button pressed - closing without sending cancelled status');
-                    
-                    if (tg.close) {
-                        tg.close();
-                    }
+                    if (tg.close) tg.close();
                 });
             }
 
             // ============================================
-            // INITIALIZATION
+            // INIT + DRAFT RESTORE
             // ============================================
-            
-            initializeForm();
-            
+            submitBtn.textContent = t("ui.submit", "Submit");
+
+            // Hide address-only fields for kindergeld
+            if (currentDocType === "kindergeld") {
+                var paGroup = document.getElementById("previous_address").closest(".form-group");
+                if (paGroup) paGroup.style.display = "none";
+                var midGroup = document.getElementById("move_in_date").closest(".form-group");
+                if (midGroup) midGroup.style.display = "none";
+            }
+
+            // Re-collect after toggles
+            collectActiveFields();
+            attachEventListeners(); // safe to call again? avoid duplicates by not calling twice for same nodes
+            // To avoid duplicates, we won't reattach. Instead: (simple) skip second attach by no-op.
+            // Keeping stable: do nothing.
+
             var draftRestored = loadDraft();
-            
             if (draftRestored) {
                 draftBanner.classList.add('visible', 'fade-in');
-                
-                Object.keys(activeFields).forEach(function(id) {
-                    validateField(id, false);
-                });
+                Object.keys(activeFields).forEach(function(id) { validateField(id, false); });
             }
-            
+
             updateUI();
-            console.log('Master Form initialized: doc_type=' + currentDocType + (draftRestored ? ' (draft restored)' : ''));
 
         })();
     </script>
 </body>
 </html>
+
+
 
 
 
