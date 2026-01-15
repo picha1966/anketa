@@ -1483,10 +1483,14 @@
         // ========================================
         // SUBMIT (SINGLE HANDLER)
         // ========================================
+       // ========================================
+        // SUBMIT (ОНОВЛЕНО ДЛЯ ВАРІАНТУ А)
+        // ========================================
         submitBtn.addEventListener('click', function(e) {
             e.preventDefault();
             if (isSubmitting) return;
 
+            // 1. Перевірка валідації
             var allValid = true;
             Object.keys(activeFields).forEach(function(id) {
                 if (!validateField(id, true)) allValid = false;
@@ -1498,48 +1502,60 @@
                 return;
             }
 
+            // 2. Блокуємо кнопку
             isSubmitting = true;
             submitBtn.textContent = t('ui.generating', 'Generating...');
             submitBtn.classList.add('loading');
             submitBtn.disabled = true;
 
+            // 3. Збираємо дані
             var userAnswers = {};
             Object.keys(activeFields).forEach(function(id) {
                 var el = activeFields[id];
                 var v = (el.value || '').trim();
                 if (!v) return;
-                if (el.name === 'iban') v = normalizeIBAN(v);
-                if (el.name === 'bic') v = normalizeBIC(v);
+                // Очищуємо банківські дані від пробілів для бекенду
+                if (el.name === 'iban') v = v.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                if (el.name === 'bic') v = v.toUpperCase().replace(/[^A-Z0-9]/g, '');
                 userAnswers[el.name] = v;
             });
 
-            var payload = { doc_type: currentDocType, user_answers: userAnswers };
-            console.log('[WebApp] Payload:', payload);
+            var payload = { 
+                doc_type: currentDocType, 
+                user_answers: userAnswers,
+                lang: currentLang 
+            };
 
+            // 4. Очищуємо чернетку, бо анкету завершено
             try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
 
+            // 5. ВІДПРАВКА В TELEGRAM
             if (tg && tg.sendData) {
                 try {
+                    // Перетворюємо JSON у рядок і відправляємо
                     tg.sendData(JSON.stringify(payload));
-                    console.log('[WebApp] SENT TO TELEGRAM:', JSON.stringify(payload));
-                    // DO NOT CLOSE - bot will close after PDF is ready
+                    
+                    // ВАРІАНТ А: Закриваємо анкету ВІДРАЗУ.
+                    // Дані передаються в момент закриття. Бот підхопить їх у чаті.
+                    setTimeout(function() {
+                        tg.close();
+                    }, 100); 
+
                 } catch (err) {
-                    console.error('[WebApp] sendData error:', err);
+                    alert('Помилка відправки: ' + err.message);
                     isSubmitting = false;
                     submitBtn.textContent = t('ui.submit', 'Submit');
                     submitBtn.classList.remove('loading');
-                    updateUI();
+                    submitBtn.disabled = false;
                 }
             } else {
-                console.warn('[WebApp] Not in Telegram context');
-                statusIcon.textContent = '✅';
-                statusText.textContent = 'Test mode - data ready';
-                setTimeout(function() {
-                    isSubmitting = false;
-                    submitBtn.textContent = t('ui.submit', 'Submit');
-                    submitBtn.classList.remove('loading');
-                    updateUI();
-                }, 2000);
+                // Режим тестування (якщо відкрили просто в браузері)
+                console.log('Payload for Bot:', payload);
+                alert('Дані готові (Test Mode). Дивіться консоль.');
+                isSubmitting = false;
+                submitBtn.textContent = t('ui.submit', 'Submit');
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
             }
         });
 
@@ -1566,6 +1582,7 @@
     </script>
 </body>
    
+
 
 
 
