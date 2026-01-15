@@ -1676,8 +1676,16 @@
 
     if (tg && tg.sendData) {
         try {
-            tg.sendData(JSON.stringify(payload));
-            console.log("✅ tg.sendData called");
+           tg.sendData(JSON.stringify(payload));
+console.log("📤 Payload sent to Telegram:", payload);
+
+setTimeout(function() {
+    if (tg.close) {
+        console.log("🔒 Closing WebApp to deliver data to bot");
+        tg.close();
+    }
+}, 300);
+
 
             // ❌ НЕ закриваємо WebApp тут
             // tg.close() має викликатись ботом після отримання
@@ -1747,6 +1755,7 @@
     </script>
 </body>
 </html>
+
 
 
 
