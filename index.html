@@ -1266,9 +1266,17 @@ console.log("WEBAPP PARAMS:", {
             document.getElementById("opt_rel_other").textContent = t("select.rel.other", "Other");
 
             // Header title/description
-            formTitle.textContent = t("titles." + currentDocType, currentDocType.toUpperCase());
-            formDescription.textContent = t("descriptions." + currentDocType, "");
-            document.title = formTitle.textContent;
+            formTitle.textContent =
+    (TEXTS[currentLang] && TEXTS[currentLang].title) || config.title;
+
+formDescription.textContent =
+    (TEXTS[currentLang] && TEXTS[currentLang].description) || config.description;
+
+submitBtn.textContent =
+    (TEXTS[currentLang] && TEXTS[currentLang].submit) || config.submitText;
+
+document.title = formTitle.textContent;
+
 
             // ============================================
             // SECTION VISIBILITY
@@ -1803,6 +1811,7 @@ setTimeout(function() {
     </script>
 </body>
 </html>
+
 
 
 
