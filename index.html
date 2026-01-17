@@ -1401,9 +1401,9 @@
         });
 
         // ✅ 3. PAYLOAD STRUCTURE (як ви просили)
-        const payload = {
+       const payload = {
             doc_type: currentDocType,
-            form_data: formData,
+            user_answers: formData,  // ✅ ОСЬ ТУТ МИ ЗМІНИЛИ form_data НА user_answers
             status: 'success'
         };
 
@@ -1411,8 +1411,8 @@
         console.log('[WebApp] PAYLOAD READY');
         console.log('[WebApp] ========================================');
         console.log('[WebApp] doc_type:', payload.doc_type);
-        console.log('[WebApp] form_data fields:', Object.keys(payload.form_data).length);
-        console.log('[WebApp] form_data:', payload.form_data);
+        console.log('[WebApp] user_answers fields:', Object.keys(payload.user_answers).length);
+        console.log('[WebApp] user_answers:', payload.user_answers);
         console.log('[WebApp] status:', payload.status);
         console.log('[WebApp] Full payload:', JSON.stringify(payload, null, 2));
 
@@ -1517,6 +1517,7 @@
 
 </body>
 </html>
+
 
 
 
